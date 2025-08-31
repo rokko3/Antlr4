@@ -25,6 +25,10 @@ alias antlr4='java -Xmx500M -cp "$CLASSPATH" org.antlr.v4.Tool'
 alias grun='java -Xmx500M -cp "$CLASSPATH" org.antlr.v4.gui.TestRig'
 
 ```
+Luego, guardamos el archivo y escribimos en consola para cargar la configuracion:
+```bash
+source ~./zshrc
+```
 
 ## Uso de calculadora
 

@@ -27,8 +27,7 @@ public class EvalVisitor extends LabeledExprBaseVisitor<Integer> {
     @Override
     public Integer visitId(LabeledExprParser.IdContext ctx) {
         String id = ctx.ID().getText();
-        if (memory.containsKey(id)) return memory.get(id);
-        return 0;
+        return memory.getOrDefault(id, 0);
     }
 
     @Override
@@ -40,20 +39,44 @@ public class EvalVisitor extends LabeledExprBaseVisitor<Integer> {
     public Integer visitMulDiv(LabeledExprParser.MulDivContext ctx) {
         int left = visit(ctx.expr(0));
         int right = visit(ctx.expr(1));
-        switch (ctx.op.getType()) {
-            case LabeledExprParser.MUL: return left * right;
-            case LabeledExprParser.DIV: return left / right;
-            case LabeledExprParser.MOD: return left % right;
-            case LabeledExprParser.POW: return (int)Math.pow(left, right);
-        }
-        return 0;
+
+        return switch (ctx.op.getType()) {
+            case LabeledExprParser.MUL -> left * right;
+            case LabeledExprParser.DIV -> left / right;
+            case LabeledExprParser.MOD -> left % right;
+            case LabeledExprParser.POW -> (int) Math.pow(left, right);
+            default -> 0;
+        };
     }
 
     @Override
     public Integer visitAddSub(LabeledExprParser.AddSubContext ctx) {
         int left = visit(ctx.expr(0));
         int right = visit(ctx.expr(1));
-        if (ctx.op.getType() == LabeledExprParser.ADD) return left + right;
-        return left - right;
+
+        return switch (ctx.op.getType()) {
+            case LabeledExprParser.ADD -> left + right;
+            case LabeledExprParser.SUB -> left - right;
+            default -> 0;
+        };
+    }
+
+    @Override
+    public Integer visitFuncCall(LabeledExprParser.FuncCallContext ctx) {
+        String funcName = ctx.func.getText().toLowerCase();
+        int value = visit(ctx.expr());
+
+        return switch (funcName) {
+            case "sin" -> (int) Math.round(Math.sin(Math.toRadians(value)));
+            case "cos" -> (int) Math.round(Math.cos(Math.toRadians(value)));
+            case "tan" -> (int) Math.round(Math.tan(Math.toRadians(value)));
+            case "asin" -> (int) Math.round(Math.toDegrees(Math.asin(value)));
+            case "acos" -> (int) Math.round(Math.toDegrees(Math.acos(value)));
+            case "atan" -> (int) Math.round(Math.toDegrees(Math.atan(value)));
+            default -> {
+                System.err.println("Función desconocida: " + funcName);
+                yield 0;
+            }
+        };
     }
 }
