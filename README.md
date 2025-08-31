@@ -47,7 +47,7 @@ expr: expr op=('*'|'/'|'%'|'^') expr # MulDiv
 
 ```
 ---
-Significa que la gramatica que abarca todas las reglas consta de un conjunto de stat+, es decir un conjunto de "statements", en el que definimos la asignacion de variables, salto de linea y impresion de expresion. Cada expresion puede ser un operador mateamtico, un numero o una variable.
+Significa que la gramatica que abarca todas las reglas consta de un conjunto de stat+, es decir un conjunto de "statements", en el que definimos la asignacion de variables, salto de linea y impresion de expresion. Cada expresion puede ser un operador matematico, un numero o una variable.
 ---
 En la siguiente estructura se define el lexico a usar con sus respectivos tokens:
 ```bash
