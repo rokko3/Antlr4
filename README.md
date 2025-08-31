@@ -13,7 +13,7 @@ nano ~./zshrc # puede ser zsh o bash
 ´´´
 Dentro de la configuracion de nano, escribimos las siguientes lineas al final del documento
 
-´´´bash
+```bash
 
 # Configuración ANTLR4
 export CLASSPATH=".:/usr/local/lib/antlr-4.13.2-complete.jar:$CLASSPATH"
@@ -24,13 +24,13 @@ alias antlr4='java -Xmx500M -cp "$CLASSPATH" org.antlr.v4.Tool'
 # Alias para la herramienta de ejecucion
 alias grun='java -Xmx500M -cp "$CLASSPATH" org.antlr.v4.gui.TestRig'
 
-´´´bash
+```
 
 ## Uso de calculadora
 
 Definimos la gramatica utilizando stat, exp y prog.
 
-´´´bash
+```bash
 prog: stat+ ;
 
 stat: expr NEWLINE              # printExpr
@@ -45,11 +45,11 @@ expr: expr op=('*'|'/'|'%'|'^') expr # MulDiv
     | '(' expr ')'                  # Parens
     ;
 
-´´´
+```
 Significa que la gramatica que abarca todas las reglas consta de un conjunto de stat+, es decir un conjunto de "statements", en el que definimos la asignacion de variables, salto de linea y impresion de expresion. Cada expresion puede ser un operador mateamtico, un numero o una variable.
 ---
 En la siguiente estructura se define el lexico a usar con sus respectivos tokens:
-´´´bash
+```bash
 MUL : '*' ;
 DIV : '/' ;
 MOD : '%' ;
@@ -62,4 +62,4 @@ ID  : [a-zA-Z]+ ;
 NEWLINE:'\r'? '\n' ;
 WS  : [ \t]+ -> skip ;
 
-´´´
+```
