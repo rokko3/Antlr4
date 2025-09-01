@@ -46,8 +46,11 @@ La generacion de gramatica solo permite definir la estructura de las reglas gram
 La implementacion de EvalVisitor sobre-escribe cada regla gramatical dependiendo del nodo en donde este parado, es por eso que para cada regla gramatical usamos el # "caracterizador", el caracterizador permite a EvalVisitor realizar un proceso respectivo para cada caracterizador, esto permite que EvalVIsitor distinga entre imprimir una cadena, hacer operaciones o una asignacion.
 
 Funcion para imprimir una variable o caracter en el arbol:
+
 ![alt text](image-2.png)
+
 Funcion para reconocer un entero:
+
 ![alt text](image-3.png)
 
 # Uso de Operaciones trigonometricas y funciones no lineales
