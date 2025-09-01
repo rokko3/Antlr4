@@ -6,7 +6,6 @@ class EvalVisitor(LabeledExprVisitor):
     def __init__(self):
         self.memory = {}
 
-    # --------- STATEMENTS ----------
     def visitAssign(self, ctx:LabeledExprParser.AssignContext):
         id = ctx.ID().getText()
         value = self.visit(ctx.expr())
@@ -21,7 +20,7 @@ class EvalVisitor(LabeledExprVisitor):
     def visitBlank(self, ctx:LabeledExprParser.BlankContext):
         return None
 
-    # --------- ATOMS ----------
+
     def visitInt(self, ctx:LabeledExprParser.IntContext):
         return int(ctx.INT().getText())
 
@@ -34,8 +33,7 @@ class EvalVisitor(LabeledExprVisitor):
 
     def visitParens(self, ctx:LabeledExprParser.ParensContext):
         return self.visit(ctx.expr())
-
-    # --------- OPERACIONES ----------
+    
     def visitUnaryMinus(self, ctx:LabeledExprParser.UnaryMinusContext):
         return -self.visit(ctx.expr())
 
@@ -55,6 +53,9 @@ class EvalVisitor(LabeledExprVisitor):
         if ctx.op.type == LabeledExprParser.MUL:
             return left * right
         elif ctx.op.type == LabeledExprParser.DIV:
+            if right==0:
+                print("Error: División por cero")
+                return 0
             return left / right
         elif ctx.op.type == LabeledExprParser.MOD:
             return left % right
@@ -67,7 +68,6 @@ class EvalVisitor(LabeledExprVisitor):
         value = self.visit(ctx.expr())
         return math.factorial(int(value))
 
-    # --------- FUNCIONES ----------
     def visitFuncCall(self, ctx:LabeledExprParser.FuncCallContext):
         func = ctx.func.text.lower()
         value = self.visit(ctx.expr())
@@ -85,7 +85,7 @@ class EvalVisitor(LabeledExprVisitor):
         func = ctx.func.text.lower()
         value = self.visit(ctx.expr())
         if func == "sin":
-            return math.sin(value)   # aquí ya se interpreta en radianes
+            return math.sin(value)   
         elif func == "cos":
             return math.cos(value)
         elif func == "tan":
@@ -101,12 +101,17 @@ class EvalVisitor(LabeledExprVisitor):
         return math.sqrt(self.visit(ctx.expr()))
 
     def visitLnf(self, ctx:LabeledExprParser.LnfContext):
+        if self.visit(ctx.expr()) <= 0:
+            print("Error: Logaritmo natural de un número no positivo")
+            return 0
         return math.log(self.visit(ctx.expr()))
 
     def visitLogf(self, ctx:LabeledExprParser.LogfContext):
+        if self.visit(ctx.expr()) <= 0:
+            print("Error: Logaritmo de un número no positivo")
+            return 0
         return math.log10(self.visit(ctx.expr()))
 
-    # --------- PROGRAMA ----------
     def visitProg(self, ctx:LabeledExprParser.ProgContext):
         result = None
         for child in ctx.getChildren():
