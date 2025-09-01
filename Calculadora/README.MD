@@ -51,3 +51,54 @@ Funcion para reconocer un entero:
 ![alt text](image-3.png)
 
 # Uso de Operaciones trigonometricas y funciones no lineales
+
+Ampliamos nuestras reglas gramaticales para:
+* Calculo de sen, tan, cos. Tanto para radianes (rad) y grados 
+* Calculo de logaritmo natural (ln) y logaritmo base 10 (log)
+* Calculo de factorial (!)
+* Numeros decimales y negativos
+---
+Para definir si la funcion trigonometrica este en radianes o en grados, debemos utilizar lo siguiente:
+* rad funcion() # Para calcular la funcion trigonometrica en radianes
+* funcion() # Para calcular la funcion trigonometrica en grados
+```bash
+grammar LabeledExpr;
+prog: stat+ ;
+
+stat: expr NEWLINE             # printExpr
+    | ID '=' expr NEWLINE      # assign
+    | NEWLINE                  # blank
+    ;
+
+expr: '-' expr                      # numN
+    | expr op=('*'|'/'|'%'|'^') expr # MulDiv
+    | expr op=('+'|'-') expr        # AddSub
+    | INT                           # int 
+    | ID                            # id 
+    | DOUBLE                        # double
+    | '(' expr ')'                  # parens 
+    | RAD func=ID '(' expr ')'       # funcRad
+    | func=ID '(' expr ')'          # funcCall
+    | SQRT '(' expr ')'             # sqrtf   
+    | LN '(' expr ')'               # lnf
+    | LOG '(' expr ')'              # logf  
+    | expr FACT                     # factf
+    ;
+
+MUL : '*' ;
+DIV : '/' ;
+MOD : '%' ;
+POW : '^' ;
+ADD : '+' ;
+SUB : '-' ;
+DOUBLE : [0-9]+ '.' [0-9]+ ;
+INT : [0-9]+ ;
+RAD : 'rad' ;
+SQRT : 'sqrt' ;
+LN : 'ln' ;
+LOG : 'log' ;
+FACT : '!' ;
+ID  : [a-zA-Z]+ ;
+NEWLINE:'\r'? '\n' ;
+WS  : [ \t]+ -> skip ;
+```
