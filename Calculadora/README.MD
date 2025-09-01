@@ -49,3 +49,5 @@ Funcion para imprimir una variable o caracter en el arbol:
 ![alt text](image-2.png)
 Funcion para reconocer un entero:
 ![alt text](image-3.png)
+
+# Uso de Operaciones trigonometricas y funciones no lineales

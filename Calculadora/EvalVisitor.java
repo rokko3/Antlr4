@@ -1,82 +1,145 @@
+import com.sun.jdi.IntegerType;
+import java.awt.geom.FlatteningPathIterator;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EvalVisitor extends LabeledExprBaseVisitor<Integer> {
-    Map<String, Integer> memory = new HashMap<>();
+public class EvalVisitor extends LabeledExprBaseVisitor<Double> {
+    Map<String, Double> memory = new HashMap<>();
 
     @Override
-    public Integer visitAssign(LabeledExprParser.AssignContext ctx) {
+    public Double visitAssign(LabeledExprParser.AssignContext ctx) {
         String id = ctx.ID().getText();
-        int value = visit(ctx.expr());
+        Double value = visit(ctx.expr());
         memory.put(id, value);
         return value;
     }
 
     @Override
-    public Integer visitPrintExpr(LabeledExprParser.PrintExprContext ctx) {
-        Integer value = visit(ctx.expr());
+    public Double visitPrintExpr(LabeledExprParser.PrintExprContext ctx) {
+        Double value = visit(ctx.expr());
         System.out.println(value);
-        return 0;
+        return 0.0;
+    }
+    @Override
+    public Double visitDouble(LabeledExprParser.DoubleContext ctx) {
+        return Double.valueOf(ctx.DOUBLE().getText());
+    }
+    @Override
+    public Double visitNumN(LabeledExprParser.NumNContext ctx) {
+        return -visit(ctx.expr());
     }
 
     @Override
-    public Integer visitInt(LabeledExprParser.IntContext ctx) {
-        return Integer.valueOf(ctx.INT().getText());
+    public Double visitInt(LabeledExprParser.IntContext ctx) {
+        return Double.valueOf(ctx.INT().getText());
     }
 
     @Override
-    public Integer visitId(LabeledExprParser.IdContext ctx) {
+    public Double visitId(LabeledExprParser.IdContext ctx) {
         String id = ctx.ID().getText();
-        return memory.getOrDefault(id, 0);
+        return memory.getOrDefault(id, 0.0);
     }
 
     @Override
-    public Integer visitParens(LabeledExprParser.ParensContext ctx) {
+    public Double visitParens(LabeledExprParser.ParensContext ctx) {
         return visit(ctx.expr());
     }
 
     @Override
-    public Integer visitMulDiv(LabeledExprParser.MulDivContext ctx) {
-        int left = visit(ctx.expr(0));
-        int right = visit(ctx.expr(1));
+    public Double visitMulDiv(LabeledExprParser.MulDivContext ctx) {
+        double left = visit(ctx.expr(0));
+        double right = visit(ctx.expr(1));
 
         return switch (ctx.op.getType()) {
             case LabeledExprParser.MUL -> left * right;
             case LabeledExprParser.DIV -> left / right;
             case LabeledExprParser.MOD -> left % right;
-            case LabeledExprParser.POW -> (int) Math.pow(left, right);
-            default -> 0;
+            case LabeledExprParser.POW -> Math.pow(left, right);
+            default -> 0.0;
         };
     }
 
     @Override
-    public Integer visitAddSub(LabeledExprParser.AddSubContext ctx) {
-        int left = visit(ctx.expr(0));
-        int right = visit(ctx.expr(1));
+    public Double visitAddSub(LabeledExprParser.AddSubContext ctx) {
+        double left = visit(ctx.expr(0));
+        double right = visit(ctx.expr(1));
 
         return switch (ctx.op.getType()) {
             case LabeledExprParser.ADD -> left + right;
             case LabeledExprParser.SUB -> left - right;
-            default -> 0;
+            default -> 0.0;
         };
     }
 
     @Override
-    public Integer visitFuncCall(LabeledExprParser.FuncCallContext ctx) {
+    public Double visitFuncCall(LabeledExprParser.FuncCallContext ctx) {
         String funcName = ctx.func.getText().toLowerCase();
-        int value = visit(ctx.expr());
+        double value = visit(ctx.expr());
 
         return switch (funcName) {
-            case "sin" -> (int) Math.round(Math.sin(Math.toRadians(value)));
-            case "cos" -> (int) Math.round(Math.cos(Math.toRadians(value)));
-            case "tan" -> (int) Math.round(Math.tan(Math.toRadians(value)));
-            case "asin" -> (int) Math.round(Math.toDegrees(Math.asin(value)));
-            case "acos" -> (int) Math.round(Math.toDegrees(Math.acos(value)));
-            case "atan" -> (int) Math.round(Math.toDegrees(Math.atan(value)));
+            case "sin" -> Math.sin(Math.toRadians(value));
+            case "cos" -> Math.cos(Math.toRadians(value));
+            case "tan" -> Math.tan(Math.toRadians(value));
             default -> {
-                System.err.println("Función desconocida: " + funcName);
-                yield 0;
+                System.err.println("Funcion desconocida: " + funcName);
+                yield 0.0;
             }
         };
+    }
+    @Override
+    public Double visitFuncRad(LabeledExprParser.FuncRadContext ctx) {
+        String funcName = ctx.func.getText().toLowerCase();
+        double value = visit(ctx.expr());
+
+        return switch (funcName) {
+            case "sin" -> Math.sin(value);
+            case "cos" -> Math.cos(value);
+            case "tan" -> Math.tan(value);
+            default -> {
+                System.err.println("Funcion desconocida: " + funcName);
+                yield 0.0;
+            }
+        };
+    }
+    @Override
+    public Double visitLnf(LabeledExprParser.LnfContext ctx) {
+        double value = visit(ctx.expr());
+        if (value <= 0) {
+            System.err.println("Error: logaritmo no definido para " + value);
+            return Double.NaN;
+        }
+        return Math.log(value);
+    }
+    @Override
+    public Double visitLogf(LabeledExprParser.LogfContext ctx) {
+        double value = visit(ctx.expr());
+        if (value <= 0) {
+            System.err.println("Error: logaritmo no definido para " + value);return Double.NaN;
+            
+        }
+        return Math.log10(value);
+    }
+    @Override
+    public Double visitSqrtf(LabeledExprParser.SqrtfContext ctx) {
+        double value = visit(ctx.expr());
+        if (value < 0) {
+            System.err.println("Error: raiz cuadrada no definida para " + value);
+            return Double.NaN;
+        }
+        return Math.sqrt(value);
+    }
+    @Override
+    public Double visitFactf(LabeledExprParser.FactfContext ctx) {
+        double value = visit(ctx.expr());
+        if (value < 0) {
+            System.err.println("Error: factorial no definido para " + value);
+            return Double.NaN;
+        }
+        return factorial(value);
+    }
+
+    private double factorial(double n) {
+        if (n == 0) return 1;
+        return n * factorial(n - 1);
     }
 }
