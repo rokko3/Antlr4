@@ -61,3 +61,9 @@ WS  : [ \t]+ -> skip ;
 antlr4 -Dlanguage=Python3 LabeledExpr.g4
 
 ```
+## Creamos el eval visitor para cada expresion que tenemos 
+## Corremos el script
+```bash
+python main.py input.txt
+
+```
