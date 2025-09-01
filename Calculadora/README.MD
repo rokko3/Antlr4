@@ -107,3 +107,87 @@ ID  : [a-zA-Z]+ ;
 NEWLINE:'\r'? '\n' ;
 WS  : [ \t]+ -> skip ;
 ```
+Para el Eval Visitor poder ejecutar las instrucciones, creamos las funciones para cada funcion y asi las evalue dependiendo del contexto:
+
+```bash
+@Override
+    public Double visitLnf(LabeledExprParser.LnfContext ctx) {
+        double value = visit(ctx.expr());
+        if (value <= 0) {
+            System.err.println("Error: logaritmo no definido para " + value);
+            return Double.NaN;
+        }
+        return Math.log(value);
+    }
+    @Override
+    public Double visitLogf(LabeledExprParser.LogfContext ctx) {
+        double value = visit(ctx.expr());
+        if (value <= 0) {
+            System.err.println("Error: logaritmo no definido para " + value);return Double.NaN;
+            
+        }
+        return Math.log10(value);
+    }
+    @Override
+    public Double visitSqrtf(LabeledExprParser.SqrtfContext ctx) {
+        double value = visit(ctx.expr());
+        if (value < 0) {
+            System.err.println("Error: raiz cuadrada no definida para " + value);
+            return Double.NaN;
+        }
+        return Math.sqrt(value);
+    }
+    @Override
+    public Double visitFactf(LabeledExprParser.FactfContext ctx) {
+        double value = visit(ctx.expr());
+        if (value < 0) {
+            System.err.println("Error: factorial no definido para " + value);
+            return Double.NaN;
+        }
+        return factorial(value);
+    }
+
+    private double factorial(double n) {
+        if (n == 0) return 1;
+        return n * factorial(n - 1);
+    }
+```
+## Prueba 1
+
+Input:
+```bash
+1 - 3
+10 + 2 * 3
+a + 5 * (2 + 3)
+rad sin(90)
+rad cos(0)
+tan(45)
+log(-2)
+sqrt(4)
+5!
+
+```
+
+Output: 
+
+![alt text](image-4.png)
+
+---
+## Prueba 2
+Input
+```bash
+a = 5
+b = 3
+a + b * 2
+(10 - 4) / 2
+rad sin(3.1416)
+cos(60)
+tan(45)
+ln(1)
+log(100)
+sqrt(16)
+7!
+```
+Output:
+
+![alt text](image-5.png)
