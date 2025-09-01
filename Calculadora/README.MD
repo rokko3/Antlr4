@@ -25,6 +25,7 @@ b
 a + 5 * (2 + 3)
 ```
 ## Compilamos y ejecutamos, obtenemos lo siguiente
+
 ![Input](image.png)
 
 Si nos damos cuenta, esta asignando 10 a la variable a, luego la multiplica por 2 y le suma 5, en la siguiente linea decide imprimirla y es 25. Luego imprime el resultado de 10 + 2 * 3, que es 16 y por ultimo imprime 35.
@@ -38,6 +39,7 @@ b^2
 a + 5 * (2 + 3) 
 ```
 Resultado:
+
 ![alt text](image-1.png)
 ---
 # ¿Por que Funciona?
