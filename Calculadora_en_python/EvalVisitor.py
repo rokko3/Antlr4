@@ -55,7 +55,7 @@ class EvalVisitor(LabeledExprVisitor):
         elif ctx.op.type == LabeledExprParser.DIV:
             if right==0:
                 print("Error: División por cero")
-                return 0
+                return None
             return left / right
         elif ctx.op.type == LabeledExprParser.MOD:
             return left % right
@@ -79,7 +79,7 @@ class EvalVisitor(LabeledExprVisitor):
             return math.tan(math.radians(value))
         else:
             print("Función desconocida:", func)
-            return 0
+            return None
 
     def visitFuncRad(self, ctx:LabeledExprParser.FuncRadContext):
         func = ctx.func.text.lower()
@@ -92,24 +92,25 @@ class EvalVisitor(LabeledExprVisitor):
             return math.tan(value)
         else:
             print("Función desconocida con rad:", func)
-            return 0
+            return None
 
     def visitSqrtf(self, ctx:LabeledExprParser.SqrtfContext):
         if self.visit(ctx.expr()) < 0:
             print("Error: Raíz cuadrada de un número negativo")
-            return 0
+            return None
+            
         return math.sqrt(self.visit(ctx.expr()))
 
     def visitLnf(self, ctx:LabeledExprParser.LnfContext):
         if self.visit(ctx.expr()) <= 0:
             print("Error: Logaritmo natural de un número no positivo")
-            return 0
+            return None
         return math.log(self.visit(ctx.expr()))
 
     def visitLogf(self, ctx:LabeledExprParser.LogfContext):
         if self.visit(ctx.expr()) <= 0:
             print("Error: Logaritmo de un número no positivo")
-            return 0
+            return None
         return math.log10(self.visit(ctx.expr()))
 
     def visitProg(self, ctx:LabeledExprParser.ProgContext):
